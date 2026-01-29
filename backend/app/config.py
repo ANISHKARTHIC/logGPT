@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str = ""
     
+    # Google Gemini
+    gemini_api_key: str = ""
+    
     # App
     app_env: str = "development"
     frontend_url: str = "http://localhost:3000"

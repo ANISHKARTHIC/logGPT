@@ -35,6 +35,7 @@ import {
   Menu,
   X,
   Cpu,
+  Boxes,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getInitials } from "@/lib/utils";
@@ -259,6 +260,29 @@ export function Sidebar() {
               )}
             </Button>
           </motion.div>
+        </div>
+
+        {/* Return to Kiosk */}
+        <div className="px-3 pb-2">
+          <Link href="/kiosk">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start gap-3 px-3 py-3 rounded-xl border-dashed",
+                  collapsed && "justify-center px-0"
+                )}
+              >
+                <Boxes className="h-5 w-5 text-blue-500" />
+                {!collapsed && (
+                  <span className="text-sm">Return to Kiosk</span>
+                )}
+              </Button>
+            </motion.div>
+          </Link>
         </div>
 
         {/* User Section */}

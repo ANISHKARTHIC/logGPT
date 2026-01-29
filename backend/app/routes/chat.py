@@ -3,6 +3,7 @@ from typing import Optional
 from datetime import datetime
 from bson import ObjectId
 import openai
+from google import genai
 from ..database import get_database
 from ..config import settings
 from ..models import (
@@ -172,9 +173,26 @@ async def chat(
     # Add current user message
     messages.append({"role": "user", "content": request.message})
     
-    # Call OpenAI API
+    # Try Gemini first, then OpenAI, then fallback
     try:
-        if settings.openai_api_key:
+        if settings.gemini_api_key:
+            # Use Google Gemini (new SDK)
+            client = genai.Client(api_key=settings.gemini_api_key)
+            
+            # Build prompt for Gemini
+            gemini_prompt = f"{system_prompt}\n\n"
+            for msg in messages[1:]:  # Skip system message, already included
+                role = "User" if msg["role"] == "user" else "Assistant"
+                gemini_prompt += f"{role}: {msg['content']}\n\n"
+            gemini_prompt += "Assistant:"
+            
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=gemini_prompt
+            )
+            assistant_message = response.text
+        elif settings.openai_api_key:
+            # Use OpenAI
             client = openai.OpenAI(api_key=settings.openai_api_key)
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -184,10 +202,12 @@ async def chat(
             )
             assistant_message = response.choices[0].message.content
         else:
-            # Fallback response when OpenAI is not configured
+            # Fallback response when no API is configured
             assistant_message = generate_fallback_response(request.message, inventory, transactions, overdue)
     except Exception as e:
-        assistant_message = f"I apologize, but I'm having trouble processing your request. Error: {str(e)}"
+        # On any API error (quota exceeded, rate limit, etc.), use smart fallback
+        print(f"AI API error: {str(e)}")
+        assistant_message = generate_fallback_response(request.message, inventory, transactions, overdue)
     
     # Save messages to conversation
     now = datetime.utcnow()
