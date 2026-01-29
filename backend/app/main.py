@@ -8,7 +8,8 @@ from .routes import (
     components_router,
     transactions_router,
     chat_router,
-    dashboard_router
+    dashboard_router,
+    kiosk_router
 )
 
 
@@ -24,7 +25,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="LogGPT API",
-    description="Hardware & IoT Components Room Management System",
+    description="Hardware & IoT Components Room Management System - Raspberry Pi Kiosk",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -32,7 +33,7 @@ app = FastAPI(
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:3000"],
+    allow_origins=[settings.frontend_url, "http://localhost:3000", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,6 +45,7 @@ app.include_router(components_router, prefix="/api")
 app.include_router(transactions_router, prefix="/api")
 app.include_router(chat_router, prefix="/api")
 app.include_router(dashboard_router, prefix="/api")
+app.include_router(kiosk_router, prefix="/api")
 
 
 @app.get("/")

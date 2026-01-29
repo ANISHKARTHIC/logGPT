@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Bot, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Bot, Eye, EyeOff, Loader2, ArrowLeft, Boxes } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -114,9 +114,19 @@ export default function LoginPage() {
             <span className="text-2xl font-bold">LogGPT</span>
           </div>
 
+          {/* Return to Kiosk button */}
+          <Link
+            href="/kiosk"
+            className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <Boxes className="h-4 w-4" />
+            Return to Kiosk
+          </Link>
+
           <Card className="border-0 shadow-2xl lg:border">
             <CardHeader className="space-y-1 text-center">
-              <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+              <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
               <CardDescription>
                 Enter your credentials to access your account
               </CardDescription>
