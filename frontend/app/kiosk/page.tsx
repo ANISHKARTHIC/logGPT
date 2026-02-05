@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Package,
@@ -22,6 +23,7 @@ import {
   Plus,
   Minus,
   Trash2,
+  Brain,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +31,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { kioskApi, KioskComponent, BorrowedItem, KioskStats } from "@/lib/api";
 
-type KioskMode = "home" | "borrow" | "return" | "success" | "error";
+type KioskMode = "home" | "borrow" | "return" | "success" | "error" | "chat";
 
 interface CartItem {
   component: KioskComponent;
@@ -37,6 +39,7 @@ interface CartItem {
 }
 
 export default function KioskPage() {
+  const router = useRouter();
   const [mode, setMode] = useState<KioskMode>("home");
   const [stats, setStats] = useState<KioskStats | null>(null);
   const [components, setComponents] = useState<KioskComponent[]>([]);
@@ -307,7 +310,7 @@ export default function KioskPage() {
             )}
 
             {/* Main Actions */}
-            <div className="grid grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-3 gap-8 max-w-6xl mx-auto">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -328,6 +331,17 @@ export default function KioskPage() {
                 <RotateCcw className="h-20 w-20 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold mb-2">Return Components</h2>
                 <p className="text-blue-200">Return borrowed items</p>
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => router.push("/kiosk/chat")}
+                className="p-12 bg-gradient-to-br from-purple-600 to-pink-700 rounded-3xl shadow-xl hover:shadow-purple-500/25 transition-all"
+              >
+                <Brain className="h-20 w-20 mx-auto mb-4" />
+                <h2 className="text-3xl font-bold mb-2">Ask GPT</h2>
+                <p className="text-purple-200">Get AI assistance</p>
               </motion.button>
             </div>
 
