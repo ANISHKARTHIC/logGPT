@@ -375,3 +375,4 @@ async def get_kiosk_stats():
         "overdue_items": overdue,
         "recent_activity": recent_activity
     }
+
