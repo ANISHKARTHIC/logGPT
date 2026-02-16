@@ -94,6 +94,7 @@ export default function KioskChatPage() {
         body: JSON.stringify({
           message: input,
           conversation_id: conversationId || undefined,
+          kiosk_mode: true,
         }),
       });
 
@@ -150,6 +151,7 @@ export default function KioskChatPage() {
         body: JSON.stringify({
           message: query,
           conversation_id: conversationId || undefined,
+          kiosk_mode: true,
         }),
       })
         .then((res) => res.json())
