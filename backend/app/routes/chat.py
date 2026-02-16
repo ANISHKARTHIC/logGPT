@@ -312,19 +312,19 @@ def extract_query_intent(query: str) -> Dict[str, Any]:
     }
     
     # Detect intent type
-    if any(w in query_lower for w in ["where", "location", "find", "located"]):
+    if any(w in query_lower for w in ["where", "location", "find", "located", "place", "position"]):
         intent["type"] = "location"
-    elif any(w in query_lower for w in ["who has", "who took", "who borrowed", "issued to"]):
+    elif any(w in query_lower for w in ["who has", "who took", "who borrowed", "issued to", "with whom"]):
         intent["type"] = "who_has"
-    elif any(w in query_lower for w in ["available", "stock", "how many", "quantity", "left"]):
+    elif any(w in query_lower for w in ["available", "stock", "how many", "quantity", "left", "remain", "free"]):
         intent["type"] = "availability"
-    elif any(w in query_lower for w in ["overdue", "late", "pending", "due"]):
+    elif any(w in query_lower for w in ["overdue", "late", "pending", "due", "deadline"]):
         intent["type"] = "overdue"
-    elif any(w in query_lower for w in ["all", "list", "show", "inventory"]):
+    elif any(w in query_lower for w in ["all", "list", "show", "inventory", "total", "count", "summary"]):
         intent["type"] = "list_all"
-    elif any(w in query_lower for w in ["borrow", "take", "checkout", "issue"]):
+    elif any(w in query_lower for w in ["borrow", "take", "checkout", "issue", "how to borrow"]):
         intent["type"] = "borrow_help"
-    elif any(w in query_lower for w in ["return", "give back"]):
+    elif any(w in query_lower for w in ["return", "give back", "how to return"]):
         intent["type"] = "return_help"
     
     # Extract component names (common electronics)
@@ -336,7 +336,8 @@ def extract_query_intent(query: str) -> Dict[str, Any]:
         'wifi', 'bluetooth', 'gps', 'ultrasonic', 'infrared', 'temperature',
         'humidity', 'pressure', 'accelerometer', 'gyroscope', 'camera',
         'microphone', 'speaker', 'buzzer', 'button', 'switch', 'potentiometer',
-        'rfid', 'nfc', 'lora', 'gsm', 'sim', 'ethernet', 'shield'
+        'rfid', 'nfc', 'lora', 'gsm', 'sim', 'ethernet', 'shield', 'touch',
+        'thermal', 'motion', 'light', 'sound', 'humidity', 'force', 'proximity'
     ]
     
     for comp in components:
@@ -411,48 +412,54 @@ async def chat(request: ChatRequest):
     
     # Generate response
     assistant_message = None
-    
-    try:
-        if settings.gemini_api_key:
-            # Use Google Gemini with enhanced prompt
-            client = genai.Client(api_key=settings.gemini_api_key)
-            
-            # Build conversation for Gemini
-            gemini_prompt = f"{system_prompt}\n\n--- CONVERSATION ---\n\n"
-            for msg in messages[1:]:
-                role = "User" if msg["role"] == "user" else "Assistant"
-                gemini_prompt += f"{role}: {msg['content']}\n\n"
-            gemini_prompt += "Assistant: "
-            
-            response = client.models.generate_content(
-                model="gemini-2.0-flash-exp",
-                contents=gemini_prompt,
-                config={
-                    "temperature": 0.3,  # Lower for more factual responses
-                    "top_p": 0.8,
-                    "max_output_tokens": 1500
-                }
-            )
-            assistant_message = response.text
-            
-        elif settings.openai_api_key:
-            client = openai.OpenAI(api_key=settings.openai_api_key)
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=messages,
-                max_tokens=1500,
-                temperature=0.3
-            )
-            assistant_message = response.choices[0].message.content
-            
-    except Exception as e:
-        print(f"AI API error: {str(e)}")
-    
-    # Use smart fallback if AI failed
-    if not assistant_message:
+    kiosk_mode = bool(getattr(request, "kiosk_mode", False))
+
+    if kiosk_mode:
         assistant_message = generate_smart_fallback(
             request.message, intent, inventory, transactions, stats
         )
+    else:
+        try:
+            if settings.gemini_api_key:
+                # Use Google Gemini with enhanced prompt
+                client = genai.Client(api_key=settings.gemini_api_key)
+
+                # Build conversation for Gemini
+                gemini_prompt = f"{system_prompt}\n\n--- CONVERSATION ---\n\n"
+                for msg in messages[1:]:
+                    role = "User" if msg["role"] == "user" else "Assistant"
+                    gemini_prompt += f"{role}: {msg['content']}\n\n"
+                gemini_prompt += "Assistant: "
+
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash-exp",
+                    contents=gemini_prompt,
+                    config={
+                        "temperature": 0.3,  # Lower for more factual responses
+                        "top_p": 0.8,
+                        "max_output_tokens": 1500
+                    }
+                )
+                assistant_message = response.text
+
+            elif settings.openai_api_key:
+                client = openai.OpenAI(api_key=settings.openai_api_key)
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=messages,
+                    max_tokens=1500,
+                    temperature=0.3
+                )
+                assistant_message = response.choices[0].message.content
+
+        except Exception as e:
+            print(f"AI API error: {str(e)}")
+
+        # Use smart fallback if AI failed
+        if not assistant_message:
+            assistant_message = generate_smart_fallback(
+                request.message, intent, inventory, transactions, stats
+            )
     
     # Save to conversation
     now = datetime.utcnow()
@@ -483,6 +490,18 @@ async def chat(request: ChatRequest):
 # Smart Fallback Response
 # =====================
 
+def sanitize_response(text: str) -> str:
+    """Remove markdown formatting for plain text display."""
+    text = text.replace("**", "").replace("__", "")
+    text = text.replace("📦", "INVENTORY").replace("📍", "LOCATION")
+    text = text.replace("📋", "RECORDS").replace("👤", "STUDENT")
+    text = text.replace("👥", "STUDENTS").replace("🔴", "OVERDUE")
+    text = text.replace("✅", "✓").replace("❌", "✗")
+    text = text.replace("⚠️", "WARNING").replace("💡", "TIP")
+    text = text.replace("🤖", "ASSISTANT")
+    return text
+
+
 def generate_smart_fallback(
     query: str, 
     intent: Dict, 
@@ -490,7 +509,7 @@ def generate_smart_fallback(
     transactions: Dict,
     stats: Dict
 ) -> str:
-    """Generate accurate response based on actual data."""
+    """Generate accurate response based on actual data - NO markdown formatting."""
     
     query_lower = query.lower()
     
@@ -502,7 +521,8 @@ def generate_smart_fallback(
         search_terms = [w for w in words if w not in [
             'the', 'what', 'where', 'which', 'who', 'has', 'have', 'are', 
             'is', 'can', 'how', 'many', 'much', 'show', 'find', 'get',
-            'available', 'stock', 'location', 'located', 'currently'
+            'available', 'stock', 'location', 'located', 'currently', 'list',
+            'all', 'tell', 'about', 'info', 'details', 'explain'
         ]]
     
     # Find matching inventory items
@@ -526,103 +546,106 @@ def generate_smart_fallback(
     # Handle different intents
     if intent["type"] == "location" or "where" in query_lower:
         if matching_components:
-            response = "📍 **Component Location(s):**\n\n"
+            response = "COMPONENT LOCATIONS:\n\n"
             for comp in matching_components:
-                status = f"✅ {comp['available']}/{comp['total']} available" if comp['available'] > 0 else "❌ Out of stock"
-                response += f"**{comp['name']}**\n"
-                response += f"  - Location: {comp['location']}\n"
-                response += f"  - Status: {status}\n\n"
+                status = f"Available: {comp['available']}/{comp['total']}" if comp['available'] > 0 else "Out of stock"
+                response += f"{comp['name']}\n"
+                response += f"  Location: {comp['location']}\n"
+                response += f"  Status: {status}\n"
+                if comp['available'] > 0:
+                    response += f"  Stock: {comp['available']} units\n"
+                response += "\n"
             
             if matching_transactions:
-                response += "📋 **Currently borrowed by:**\n"
+                response += "CURRENTLY BORROWED BY:\n"
                 for tx in matching_transactions:
-                    response += f"  - {tx['student_name']} ({tx['student_roll']}): {tx['quantity']}x\n"
+                    response += f"  - {tx['student_name']} ({tx['student_roll']}): {tx['quantity']} unit(s)\n"
             return response
         else:
-            return f"❌ I couldn't find any component matching '{' '.join(search_terms)}' in the inventory.\n\n💡 Try searching for: Arduino, ESP32, sensors, LED, etc."
+            return f"No component found matching '{' '.join(search_terms) if search_terms else query}' in inventory."
     
     elif intent["type"] == "who_has" or ("who" in query_lower and "has" in query_lower):
         if matching_transactions:
-            response = "👤 **Currently Borrowed:**\n\n"
+            response = "CURRENTLY BORROWED:\n\n"
             for tx in matching_transactions:
-                overdue = " 🔴 OVERDUE" if tx.get("is_overdue") else ""
-                response += f"**{tx['component_name']}** x{tx['quantity']}\n"
-                response += f"  - Student: {tx['student_name']}\n"
-                response += f"  - Roll: {tx['student_roll']}\n"
-                response += f"  - Due: {tx['due_date']}{overdue}\n\n"
+                overdue = " (OVERDUE)" if tx.get("is_overdue") else ""
+                response += f"{tx['component_name']} x{tx['quantity']}\n"
+                response += f"  Student: {tx['student_name']}\n"
+                response += f"  Roll: {tx['student_roll']}\n"
+                response += f"  Due: {tx['due_date']}{overdue}\n\n"
             return response
         elif search_terms:
-            return f"✅ No one currently has '{' '.join(search_terms)}' borrowed. It should be available in the inventory."
+            return f"No one currently has '{' '.join(search_terms)}'. It should be available."
         else:
             # Show all who has what
             if transactions["by_student"]:
-                response = "👥 **Who Has What:**\n\n"
-                for student, data in list(transactions["by_student"].items())[:10]:
-                    response += f"**{student}** (Roll: {data['roll']}):\n"
+                response = "WHO HAS WHAT:\n\n"
+                for student, data in transactions["by_student"].items():
+                    response += f"{student} (Roll: {data['roll']}):\n"
                     for item in data["items"]:
                         response += f"  - {item['component_name']} x{item['quantity']}\n"
                     response += "\n"
-                return response
-            return "✅ No components are currently borrowed."
+                return response if response.strip() else "No components are currently borrowed."
+            return "No components are currently borrowed."
     
     elif intent["type"] == "availability" or "available" in query_lower:
         if matching_components:
-            response = "📦 **Availability:**\n\n"
+            response = "AVAILABILITY:\n\n"
             for comp in matching_components:
                 if comp['available'] > 0:
-                    response += f"✅ **{comp['name']}**: {comp['available']}/{comp['total']} available\n"
-                    response += f"   Location: {comp['location']}\n\n"
+                    response += f"{comp['name']}: {comp['available']}/{comp['total']} available\n"
+                    response += f"  Location: {comp['location']}\n\n"
                 else:
-                    response += f"❌ **{comp['name']}**: Out of stock (0/{comp['total']})\n"
-                    # Show who has it
+                    response += f"{comp['name']}: Out of stock (0/{comp['total']})\n"
                     for tx in transactions["active"]:
                         if tx["component_name"].lower() == comp["name"].lower():
-                            response += f"   → Borrowed by: {tx['student_name']}\n"
+                            response += f"  Currently borrowed by: {tx['student_name']}\n"
                     response += "\n"
             return response
         else:
             # Show general availability
-            response = "📦 **Inventory Overview:**\n\n"
+            response = "INVENTORY OVERVIEW:\n\n"
             response += f"Total component types: {inventory['total_types']}\n"
-            response += f"Available items: {inventory['total_available']}/{inventory['total_items']}\n\n"
+            response += f"Total items: {inventory['total_items']}\n"
+            response += f"Available: {inventory['total_available']}\n"
+            response += f"Borrowed: {inventory['total_items'] - inventory['total_available']}\n\n"
             
             if inventory['out_of_stock']:
-                response += "❌ **Out of Stock:**\n"
-                for comp in inventory['out_of_stock'][:5]:
+                response += "OUT OF STOCK:\n"
+                for comp in inventory['out_of_stock']:
                     response += f"  - {comp['name']}\n"
                 response += "\n"
             
             if inventory['low_stock']:
-                response += "⚠️ **Low Stock:**\n"
-                for comp in inventory['low_stock'][:5]:
+                response += "LOW STOCK:\n"
+                for comp in inventory['low_stock']:
                     response += f"  - {comp['name']}: {comp['available']} left\n"
             
             return response
     
     elif intent["type"] == "overdue" or "overdue" in query_lower:
         if transactions["overdue"]:
-            response = f"🔴 **Overdue Items ({len(transactions['overdue'])}):**\n\n"
+            response = f"OVERDUE ITEMS ({len(transactions['overdue'])} total):\n\n"
             for item in transactions["overdue"]:
-                response += f"**{item['component_name']}** x{item['quantity']}\n"
-                response += f"  - Student: {item['student_name']} ({item['student_roll']})\n"
-                response += f"  - Due: {item['due_date']} ({item['days_overdue']} days overdue)\n\n"
+                response += f"{item['component_name']} x{item['quantity']}\n"
+                response += f"  Student: {item['student_name']} ({item['student_roll']})\n"
+                response += f"  Due: {item['due_date']}\n"
+                response += f"  Overdue by: {item['days_overdue']} days\n\n"
             return response
         else:
-            return "✅ **Great news!** There are no overdue items at the moment."
+            return "Great! There are no overdue items."
     
-    elif intent["type"] == "list_all" or "all" in query_lower or "list" in query_lower:
-        response = f"📋 **Inventory Summary:**\n\n"
+    elif intent["type"] == "list_all" or any(w in query_lower for w in ["all", "list", "show", "inventory"]):
+        response = f"INVENTORY SUMMARY:\n\n"
         response += f"Total types: {inventory['total_types']}\n"
         response += f"Total items: {inventory['total_items']}\n"
         response += f"Available: {inventory['total_available']}\n\n"
         
         for cat, items in inventory["by_category"].items():
-            response += f"**{cat.upper()}:**\n"
-            for item in items[:5]:  # Limit per category
+            response += f"{cat.upper()}:\n"
+            for item in items:
                 status = f"{item['available']}/{item['total']}" if item['available'] > 0 else "OUT"
                 response += f"  - {item['name']}: {status}\n"
-            if len(items) > 5:
-                response += f"  ... and {len(items) - 5} more\n"
             response += "\n"
         
         return response
@@ -631,37 +654,49 @@ def generate_smart_fallback(
     if matching_components or matching_transactions:
         response = ""
         if matching_components:
-            response += "📦 **Found in Inventory:**\n\n"
+            response += "COMPONENTS FOUND:\n\n"
             for comp in matching_components:
-                status = f"✅ {comp['available']}/{comp['total']}" if comp['available'] > 0 else "❌ Out of stock"
-                response += f"**{comp['name']}** - {status}\n"
+                status = f"Available: {comp['available']}/{comp['total']}" if comp['available'] > 0 else "Out of stock"
+                response += f"{comp['name']} - {status}\n"
                 response += f"  Location: {comp['location']}\n\n"
         
         if matching_transactions:
-            response += "📋 **Active Borrows:**\n"
+            response += "ACTIVE BORROWS:\n"
             for tx in matching_transactions:
-                response += f"  - {tx['component_name']} → {tx['student_name']}\n"
+                response += f"  - {tx['component_name']} -> {tx['student_name']}\n"
         
         return response
     
-    # General help response
-    return f"""🤖 **How can I help you?**
-
-I have access to the components room inventory. Here's what I can tell you:
-
-📊 **Quick Stats:**
-- {stats['total_component_types']} component types
-- {stats['active_borrows']} items currently borrowed
-- {stats['overdue_count']} overdue items
-
-💡 **Try asking:**
-- "Where is the Arduino?"
-- "Who has the ESP32?"
-- "What sensors are available?"
-- "Show all overdue items"
-- "List all components"
-
-Just ask me about any component and I'll give you accurate information!"""
+    # Generic help if no match - try to answer the question anyway
+    if any(w in query_lower for w in ["help", "what can", "how", "tell", "explain"]):
+        response = "I can help you with information about:\n\n"
+        response += "- What components are available\n"
+        response += "- Where to find a specific component\n"
+        response += "- Who has borrowed what\n"
+        response += "- Overdue items and return dates\n"
+        response += "- Stock levels and locations\n\n"
+        response += f"We have {inventory['total_types']} types of components with {inventory['total_available']} currently available.\n"
+        return response
+    
+    # Try generic answer based on question type
+    if any(w in query_lower for w in ["how many", "total", "count", "how much"]):
+        response = f"INVENTORY STATS:\n\n"
+        response += f"Total component types: {inventory['total_types']}\n"
+        response += f"Total items: {inventory['total_items']}\n"
+        response += f"Available now: {inventory['total_available']}\n"
+        response += f"Currently borrowed: {inventory['total_items'] - inventory['total_available']}\n"
+        return response
+    
+    if any(w in query_lower for w in ["status", "summary", "overview"]):
+        response = f"INVENTORY STATUS:\n\n"
+        response += f"Total types: {inventory['total_types']}\n"
+        response += f"Available: {inventory['total_available']}/{inventory['total_items']}\n"
+        response += f"Borrowed: {inventory['total_items'] - inventory['total_available']}\n"
+        response += f"Overdue: {transactions['total_overdue']}\n"
+        return response
+    
+    # Default: show matching items or general help
+    return f"ASSISTANT HELP:\n\nI have access to {inventory['total_types']} component types.\n\nTry asking:\n- Where is the Arduino?\n- Who has the ESP32?\n- What sensors are available?\n- Show all overdue items\n- List all components\n- How many items total?\n\nJust ask me about any component!"
 
 
 def generate_smart_suggestions(intent: Dict, inventory: Dict, transactions: Dict) -> List[str]:

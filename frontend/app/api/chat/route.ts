@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, conversation_id } = await request.json();
+    const { message, conversation_id, kiosk_mode } = await request.json();
 
     if (!message || typeof message !== "string") {
       return NextResponse.json(
@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({
           message,
           conversation_id,
+          kiosk_mode,
         }),
       }
     );
