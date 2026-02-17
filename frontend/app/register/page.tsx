@@ -102,7 +102,7 @@ export default function RegisterPage() {
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
-        className="hidden w-1/2 flex-col justify-between bg-gradient-to-br from-primary/90 via-primary to-purple-700 p-12 lg:flex"
+        className="hidden w-1/2 flex-col justify-between bg-gradient-to-br from-blue-800/95 via-blue-700 to-blue-800 p-12 lg:flex"
       >
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur">

@@ -318,7 +318,7 @@ export function Sidebar() {
                       <span className="text-xs text-muted-foreground capitalize flex items-center gap-1">
                         <span className={cn(
                           "inline-block h-1.5 w-1.5 rounded-full",
-                          user?.role === "admin" ? "bg-purple-500" : "bg-blue-500"
+                          user?.role === "admin" ? "bg-blue-700" : "bg-blue-600"
                         )} />
                         {user?.role}
                       </span>

@@ -247,7 +247,7 @@ export default function KioskPage() {
   const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-950 text-white p-6">
       <AnimatePresence mode="wait">
         {/* HOME SCREEN */}
         {mode === "home" && (
@@ -265,45 +265,45 @@ export default function KioskPage() {
                 animate={{ scale: 1 }}
                 className="inline-flex items-center gap-3 mb-4"
               >
-                <div className="p-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl">
+                <div className="p-4 bg-gradient-to-br from-blue-800 to-blue-900 rounded-2xl">
                   <Boxes className="h-12 w-12" />
                 </div>
-                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-300 to-blue-200 bg-clip-text text-transparent">
                   Components Room
                 </h1>
               </motion.div>
-              <p className="text-xl text-slate-400">IoT & Hardware Management Kiosk</p>
+              <p className="text-xl text-white">IoT & Hardware Management System</p>
             </div>
 
             {/* Stats Cards */}
             {stats && (
               <div className="grid grid-cols-4 gap-4 mb-12">
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardContent className="pt-6 text-center">
-                    <Package className="h-8 w-8 mx-auto mb-2 text-blue-400" />
+                    <package className="h-8 w-8 mx-auto mb-2 text-blue-400" />
                     <div className="text-3xl font-bold">{stats.total_components}</div>
-                    <div className="text-slate-400 text-sm">Total Components</div>
+                    <div className="text-sm font-semibold text-white">Total Components</div>
                   </CardContent>
                 </Card>
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardContent className="pt-6 text-center">
-                    <CheckCircle className="h-8 w-8 mx-auto mb-2 text-green-400" />
+                    <CheckCircle className="h-8 w-8 mx-auto mb-2 text-cyan-400" />
                     <div className="text-3xl font-bold">{stats.available_components}</div>
-                    <div className="text-slate-400 text-sm">Available</div>
+                    <div className="text-sm font-semibold text-white">Available</div>
                   </CardContent>
                 </Card>
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardContent className="pt-6 text-center">
-                    <Activity className="h-8 w-8 mx-auto mb-2 text-yellow-400" />
+                    <Activity className="h-8 w-8 mx-auto mb-2 text-blue-400" />
                     <div className="text-3xl font-bold">{stats.active_borrows}</div>
-                    <div className="text-slate-400 text-sm">Active Borrows</div>
+                    <div className="text-sm font-semibold text-white">Active Borrows</div>
                   </CardContent>
                 </Card>
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardContent className="pt-6 text-center">
                     <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-red-400" />
                     <div className="text-3xl font-bold">{stats.overdue_items}</div>
-                    <div className="text-slate-400 text-sm">Overdue</div>
+                    <div className="text-sm font-semibold text-white">Overdue</div>
                   </CardContent>
                 </Card>
               </div>
@@ -315,45 +315,45 @@ export default function KioskPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setMode("borrow")}
-                className="p-12 bg-gradient-to-br from-green-600 to-emerald-700 rounded-3xl shadow-xl hover:shadow-green-500/25 transition-all"
+                className="p-12 bg-gradient-to-br from-cyan-600 to-blue-700 rounded-3xl shadow-xl hover:shadow-blue-500/25 transition-all"
               >
                 <ArrowRight className="h-20 w-20 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold mb-2">Borrow Components</h2>
-                <p className="text-green-200">Select multiple components</p>
+                <p className="text-white font-semibold">Select multiple components</p>
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setMode("return")}
-                className="p-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl shadow-xl hover:shadow-blue-500/25 transition-all"
+                className="p-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl shadow-xl hover:shadow-blue-500/25 transition-all"
               >
                 <RotateCcw className="h-20 w-20 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold mb-2">Return Components</h2>
-                <p className="text-blue-200">Return borrowed items</p>
+                <p className="text-white font-semibold">Return borrowed items</p>
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => router.push("/kiosk/chat")}
-                className="p-12 bg-gradient-to-br from-purple-600 to-pink-700 rounded-3xl shadow-xl hover:shadow-purple-500/25 transition-all"
+                className="p-12 bg-gradient-to-br from-blue-700 to-blue-600 rounded-3xl shadow-xl hover:shadow-blue-500/25 transition-all"
               >
                 <Brain className="h-20 w-20 mx-auto mb-4" />
                 <h2 className="text-3xl font-bold mb-2">Ask GPT</h2>
-                <p className="text-purple-200">Get AI assistance</p>
+                <p className="text-white font-semibold">Get AI assistance</p>
               </motion.button>
             </div>
 
             {/* Recent Activity */}
             {stats && stats.recent_activity.length > 0 && (
               <div className="mt-12 max-w-4xl mx-auto">
-                <h3 className="text-xl font-semibold mb-4 text-slate-300">Recent Activity</h3>
+                <h3 className="text-xl font-semibold mb-4 text-white">Recent Activity</h3>
                 <div className="space-y-2">
                   {stats.recent_activity.slice(0, 5).map((activity, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 p-3 bg-slate-800/30 rounded-lg text-sm"
+                      className="flex items-center gap-4 p-3 bg-blue-800/30 rounded-lg text-sm"
                     >
                       {activity.type === "borrow" ? (
                         <ArrowRight className="h-5 w-5 text-green-400" />
@@ -361,11 +361,11 @@ export default function KioskPage() {
                         <RotateCcw className="h-5 w-5 text-blue-400" />
                       )}
                       <span className="font-medium">{activity.student}</span>
-                      <span className="text-slate-400">
+                      <span className="text-white/80 text-sm">
                         {activity.type === "borrow" ? "borrowed" : "returned"}
                       </span>
                       <span className="text-white">{activity.component}</span>
-                      <span className="text-slate-500 ml-auto text-xs">
+                      <span className="text-blue-400 ml-auto text-xs">
                         {new Date(activity.time).toLocaleTimeString()}
                       </span>
                     </div>
@@ -378,7 +378,7 @@ export default function KioskPage() {
             <div className="text-center mt-12">
               <a
                 href="/login"
-                className="text-slate-500 hover:text-slate-300 text-sm underline"
+                className="text-white/70 hover:text-white text-sm underline transition-colors"
               >
                 Admin Login →
               </a>
@@ -401,17 +401,17 @@ export default function KioskPage() {
                   variant="ghost"
                   size="icon"
                   onClick={resetState}
-                  className="text-slate-400 hover:text-white"
+                  className="text-white/70 hover:text-white transition-colors"
                 >
                   <ArrowLeft className="h-6 w-6" />
                 </Button>
                 <h1 className="text-3xl font-bold">Borrow Components</h1>
               </div>
               {/* Cart Badge */}
-              <div className="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded-full">
                 <ShoppingCart className="h-5 w-5 text-green-400" />
                 <span className="font-bold text-lg">{totalCartItems}</span>
-                <span className="text-slate-400">items</span>
+                <span className="text-white/70">{cart.length} items</span>
               </div>
             </div>
 
@@ -419,7 +419,7 @@ export default function KioskPage() {
               {/* Left: Student Info & Cart */}
               <div className="space-y-4">
                 {/* Student Info */}
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <User className="h-5 w-5" />
@@ -428,7 +428,7 @@ export default function KioskPage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <label className="text-xs text-slate-400 mb-1 block">Roll Number</label>
+                      <label className="text-xs text-white/70 mb-1 block">Roll Number</label>
                       <Input
                         value={rollNumber}
                         onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
@@ -437,7 +437,7 @@ export default function KioskPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-slate-400 mb-1 block">Name</label>
+                      <label className="text-xs text-white/70 mb-1 block">Name</label>
                       <Input
                         value={studentName}
                         onChange={(e) => setStudentName(e.target.value)}
@@ -449,7 +449,7 @@ export default function KioskPage() {
                 </Card>
 
                 {/* Cart */}
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <ShoppingCart className="h-5 w-5 text-green-400" />
@@ -458,7 +458,7 @@ export default function KioskPage() {
                   </CardHeader>
                   <CardContent>
                     {cart.length === 0 ? (
-                      <p className="text-slate-500 text-center py-4">
+                      <p className="text-white/60 text-center py-4">
                         Click on components to add them
                       </p>
                     ) : (
@@ -466,11 +466,11 @@ export default function KioskPage() {
                         {cart.map((item) => (
                           <div
                             key={item.component.id}
-                            className="flex items-center justify-between p-2 bg-slate-700/50 rounded-lg"
+                            className="flex items-center justify-between p-2 bg-blue-700/50 rounded-lg"
                           >
                             <div className="flex-1 min-w-0">
                               <p className="font-medium truncate text-sm">{item.component.name}</p>
-                              <p className="text-xs text-slate-400">{item.component.category}</p>
+                              <p className="text-xs text-white/60">{item.component.category}</p>
                             </div>
                             <div className="flex items-center gap-1">
                               <Button
@@ -526,16 +526,16 @@ export default function KioskPage() {
               {/* Middle & Right: Component Search & Grid */}
               <div className="col-span-2 space-y-4">
                 {/* Search & Categories */}
-                <Card className="bg-slate-800/50 border-slate-700">
+                <Card className="bg-blue-800/50 border-blue-700">
                   <CardContent className="pt-4">
                     <div className="flex gap-4 mb-3">
                       <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
                         <Input
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           placeholder="Search components..."
-                          className="bg-slate-900 border-slate-600 pl-10"
+                          className="bg-blue-900 border-blue-600 pl-10"
                         />
                       </div>
                     </div>
@@ -562,10 +562,10 @@ export default function KioskPage() {
                 </Card>
 
                 {/* Component Grid */}
-                <div className="bg-slate-800/30 rounded-2xl p-4 max-h-[calc(100vh-280px)] overflow-y-auto">
+                <div className="bg-blue-800/30 rounded-2xl p-4 max-h-[calc(100vh-280px)] overflow-y-auto">
                   {loading ? (
                     <div className="flex items-center justify-center h-64">
-                      <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+                      <Loader2 className="h-8 w-8 animate-spin text-white/70" />
                     </div>
                   ) : (
                     <div className="grid grid-cols-3 gap-3">
@@ -580,14 +580,14 @@ export default function KioskPage() {
                             className={`p-4 rounded-xl transition-all cursor-pointer ${
                               inCart
                                 ? "bg-green-600/30 ring-2 ring-green-500"
-                                : "bg-slate-700/50 hover:bg-slate-700"
+                                : "bg-blue-700/50 hover:bg-blue-700 transition-colors"
                             }`}
                             onClick={() => addToCart(component)}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1">
                                 <h4 className="font-semibold text-sm">{component.name}</h4>
-                                <p className="text-xs text-slate-400">{component.category}</p>
+                                <p className="text-xs text-white/60">{component.category}</p>
                               </div>
                               <div className="flex flex-col items-end gap-1">
                                 <Badge
@@ -613,7 +613,7 @@ export default function KioskPage() {
                         );
                       })}
                       {components.length === 0 && (
-                        <div className="col-span-3 text-center py-12 text-slate-500">
+                        <div className="col-span-3 text-center py-12 text-white/60">
                           No components found
                         </div>
                       )}
@@ -639,7 +639,7 @@ export default function KioskPage() {
                 variant="ghost"
                 size="icon"
                 onClick={resetState}
-                className="text-slate-400 hover:text-white"
+                className="text-white/70 hover:text-white transition-colors"
               >
                 <ArrowLeft className="h-6 w-6" />
               </Button>
@@ -647,11 +647,11 @@ export default function KioskPage() {
             </div>
 
             {/* Roll Number Lookup */}
-            <Card className="bg-slate-800/50 border-slate-700 mb-6">
+            <Card className="bg-blue-800/50 border-blue-700 mb-6">
               <CardContent className="pt-6">
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="text-sm text-slate-400 mb-1 block">Enter Your Roll Number</label>
+                    <label className="text-sm text-white/70 mb-1 block">Enter Your Roll Number</label>
                     <Input
                       value={rollNumber}
                       onChange={(e) => setRollNumber(e.target.value.toUpperCase())}
@@ -685,7 +685,7 @@ export default function KioskPage() {
                 <h2 className="text-xl font-semibold flex items-center gap-2">
                   <Hash className="h-5 w-5 text-blue-400" />
                   {studentName && <span>{studentName}</span>}
-                  <span className="text-slate-400">({rollNumber})</span>
+                  <span className="text-white/60">({rollNumber})</span>
                 </h2>
 
                 {borrowedItems.length > 0 ? (
@@ -696,7 +696,7 @@ export default function KioskPage() {
                           <div className="flex items-center justify-between">
                             <div>
                               <h3 className="text-lg font-semibold">{item.component_name}</h3>
-                              <p className="text-slate-400">Quantity: {item.quantity}</p>
+                              <p className="text-white/60">Quantity: {item.quantity}</p>
                               <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
                                 <Clock className="h-3 w-3" />
                                 Borrowed: {new Date(item.borrowed_at).toLocaleDateString()}

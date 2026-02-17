@@ -240,8 +240,8 @@ export default function UsersPage() {
           title="Active Issues"
           value={totalActiveIssues}
           icon={Package}
-          color="text-purple-500"
-          bgColor="bg-purple-500/10"
+          color="text-blue-600"
+          bgColor="bg-blue-100"
         />
         <StatsCard
           title="Users with Overdue"
@@ -319,8 +319,8 @@ export default function UsersPage() {
                   className={cn(
                     "flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold text-white",
                     selectedUser.role === "admin"
-                      ? "bg-purple-500"
-                      : "bg-blue-500"
+                      ? "bg-blue-700"
+                      : "bg-blue-600"
                   )}
                 >
                   {selectedUser.name.charAt(0).toUpperCase()}
@@ -332,7 +332,7 @@ export default function UsersPage() {
                       variant="outline"
                       className={cn(
                         selectedUser.role === "admin"
-                          ? "border-purple-500/20 bg-purple-500/10 text-purple-500"
+                          ? "border-blue-300 bg-blue-100 text-blue-700"
                           : "border-blue-500/20 bg-blue-500/10 text-blue-500"
                       )}
                     >
@@ -479,7 +479,7 @@ function UserCard({
               <div
                 className={cn(
                   "flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold text-white",
-                  user.role === "admin" ? "bg-purple-500" : "bg-blue-500"
+                  user.role === "admin" ? "bg-blue-700" : "bg-blue-600"
                 )}
               >
                 {user.name.charAt(0).toUpperCase()}
@@ -522,7 +522,7 @@ function UserCard({
               className={cn(
                 "capitalize",
                 user.role === "admin"
-                  ? "border-purple-500/20 bg-purple-500/10 text-purple-500"
+                  ? "border-blue-600/20 bg-blue-600/10 text-blue-600"
                   : "border-blue-500/20 bg-blue-500/10 text-blue-500"
               )}
             >

@@ -70,10 +70,10 @@ const categoryColors: Record<ComponentCategory, string> = {
   microcontroller: "bg-blue-500/10 text-blue-500",
   sensor: "bg-green-500/10 text-green-500",
   actuator: "bg-orange-500/10 text-orange-500",
-  display: "bg-purple-500/10 text-purple-500",
+  display: "bg-blue-100 text-blue-700",
   communication: "bg-cyan-500/10 text-cyan-500",
   power: "bg-yellow-500/10 text-yellow-600",
-  connector: "bg-pink-500/10 text-pink-500",
+  connector: "bg-blue-100 text-blue-600",
   other: "bg-gray-500/10 text-gray-500",
 };
 

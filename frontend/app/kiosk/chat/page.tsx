@@ -29,25 +29,25 @@ const suggestedQueries = [
     icon: Package,
     title: "Available Components",
     query: "What components are currently available?",
-    color: "text-blue-500 bg-blue-500/10",
+    color: "text-slate-600 bg-slate-100",
   },
   {
     icon: Users,
     title: "Who has ESP32?",
     query: "Who currently has the ESP32 checked out?",
-    color: "text-purple-500 bg-purple-500/10",
+    color: "text-teal-600 bg-teal-50",
   },
   {
     icon: AlertTriangle,
     title: "Overdue Items",
     query: "Which components are overdue?",
-    color: "text-red-500 bg-red-500/10",
+    color: "text-red-600 bg-red-50",
   },
   {
     icon: Cpu,
     title: "Popular Components",
     query: "What are the most requested components?",
-    color: "text-green-500 bg-green-500/10",
+    color: "text-blue-600 bg-blue-50",
   },
 ];
 
@@ -192,7 +192,7 @@ export default function KioskChatPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-600 rounded-lg flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -221,7 +221,7 @@ export default function KioskChatPage() {
               animate={{ scale: 1, opacity: 1 }}
               className="text-center mb-12"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-slate-700 to-slate-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Bot className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">Welcome to LogGPT</h2>
@@ -275,7 +275,7 @@ export default function KioskChatPage() {
                   >
                     {message.role === "assistant" && (
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center">
                           <Bot className="w-4 h-4 text-white" />
                         </div>
                       </div>
@@ -286,7 +286,7 @@ export default function KioskChatPage() {
                         "max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-lg",
                         message.role === "assistant"
                           ? "bg-slate-700 text-slate-100"
-                          : "bg-purple-600 text-white"
+                          : "bg-blue-400 text-white"
                       )}
                     >
                       <p className="text-sm">{message.content}</p>
@@ -294,7 +294,7 @@ export default function KioskChatPage() {
 
                     {message.role === "user" && (
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                           <User className="w-4 h-4 text-white" />
                         </div>
                       </div>
@@ -310,7 +310,7 @@ export default function KioskChatPage() {
                   className="flex gap-3"
                 >
                   <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full flex items-center justify-center\">
                       <Loader2 className="w-4 h-4 text-white animate-spin" />
                     </div>
                   </div>
@@ -344,12 +344,12 @@ export default function KioskChatPage() {
               }}
               placeholder="Ask about components, availability, or who has what..."
               disabled={isLoading}
-              className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 focus:border-purple-500"
+              className="bg-slate-200 border-slate-300 text-gray-700 placeholder:text-slate-500 focus:border-blue-400"
             />
             <Button
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white disabled:opacity-50"
+              className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-700 text-white disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
             </Button>

@@ -208,7 +208,7 @@ function AdminDashboard({
       value: stats?.total_users || 0,
       icon: Users,
       color: "text-violet-600 dark:text-violet-400",
-      gradient: "from-violet-500/10 to-purple-500/10",
+      gradient: "from-blue-700/10 to-blue-600/10",
     },
     {
       title: "This Week",
@@ -394,7 +394,7 @@ function AdminDashboard({
                 </Button>
               </Link>
               <Link href="/chat">
-                <Button variant="secondary" className="gap-2 bg-gradient-to-r from-violet-500/10 to-purple-500/10 hover:from-violet-500/20 hover:to-purple-500/20 border border-violet-500/20">
+                <Button variant="secondary" className="gap-2 bg-gradient-to-r from-blue-700/10 to-blue-600/10 hover:from-blue-700/20 hover:to-blue-600/20 border border-blue-700/20">
                   <Sparkles className="h-4 w-4 text-violet-500" />
                   Ask LogGPT
                 </Button>
@@ -536,7 +536,7 @@ function StudentDashboard({ stats }: { stats: StudentDashboardStats }) {
                 </Button>
               </Link>
               <Link href="/chat" className="block">
-                <Button variant="secondary" className="w-full justify-start gap-3 h-14 text-base bg-gradient-to-r from-violet-500/10 to-purple-500/10 hover:from-violet-500/20 hover:to-purple-500/20 border border-violet-500/20 transition-all">
+                <Button variant="secondary" className="w-full justify-start gap-3 h-14 text-base bg-gradient-to-r from-blue-700/10 to-blue-600/10 hover:from-blue-700/20 hover:to-blue-600/20 border border-blue-700/20 transition-all">
                   <div className="p-2 rounded-lg bg-violet-500/20">
                     <Sparkles className="h-5 w-5 text-violet-500" />
                   </div>
