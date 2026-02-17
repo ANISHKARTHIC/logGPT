@@ -1,7 +1,7 @@
 # LogGPT - Hardware & IoT Components Room Management System
 
 <div align="center">
-  <img src="docs/logo.png" alt="LogGPT Logo" width="122" />
+  <img src="docs/Logo.png.png" alt="250" width="122" />
   <p><strong>A production-grade SaaS application for managing hardware and IoT components in educational/lab environments.</strong></p>
   
   ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
@@ -264,14 +264,10 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 MIT License - feel free to use this project for your own purposes.
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
 
 <div align="center">
   <p>Built with ❤️ for hardware labs everywhere</p>
 </div>
+
 
 
